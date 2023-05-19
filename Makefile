@@ -115,20 +115,20 @@ fly-secrets-set:
 fly-secrets-list:
 	fly secrets list
 
-terraform-init:
-	cd apps/service-iac && terraform init
+terraform-init-staging:
+	cd apps/service-iac/environments/staging && terraform init
 
-terraform-plan:
-	cd apps/service-iac && terraform plan
+terraform-plan-staging:
+	cd apps/service-iac/environments/staging && terraform plan
 
-terraform-apply:
-	cd apps/service-iac && terraform apply
+terraform-apply-staging:
+	cd apps/service-iac/environments/staging && terraform apply
 
-terraform-apply-auto-approve:
-	cd apps/service-iac && terraform apply -auto-approve
+terraform-apply-staging-auto-approve:
+	cd apps/service-iac/environments/staging && terraform apply -auto-approve
 
-terraform-plan-out:
-	cd apps/service-iac && terraform plan -out=tfplan
+terraform-plan-staging-out:
+	cd apps/service-iac/environments/staging && terraform plan -out=tfplan
 
-terraform-destroy:
-	cd apps/service-iac && terraform destroy
+terraform-destroy-staging:
+	cd apps/service-iac/environments/staging && terraform destroy

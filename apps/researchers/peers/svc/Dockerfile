@@ -62,7 +62,7 @@ RUN yarn prisma:generate:postgres
 
 # Build the service api
 # Creates a "dist" folder with the production build
-RUN yarn build:service-rest-api
+RUN yarn build:researchers-peers-svc-rest-api
 
 # build smaller image for running
 FROM base
@@ -89,7 +89,7 @@ COPY package.json yarn.lock ./
 COPY --from=build /app/node_modules /app/node_modules
 COPY --from=build /app/dist /app/dist
 COPY --from=build /app/entrypoints /app/entrypoints
-COPY --from=build /app/libs/adapters/src/database/infra/prisma /app/libs/adapters/src/database/infra/prisma
+COPY --from=build /app/libs/researchers/peers/adapters/src/database/infra/prisma /app/libs/researchers/peers/adapters/src/database/infra/prisma
 
 # # Expose the service api port
 EXPOSE 8080

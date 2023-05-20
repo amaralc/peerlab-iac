@@ -177,6 +177,12 @@ resource "google_service_account" "researchers-peers-svc" {
   project      = var.project_id
 }
 
+resource "google_project_iam_member" "service_account_user" {
+  project = var.project_id
+  role    = "roles/iam.serviceAccountUser"
+  member  = "serviceAccount:${google_service_account.researchers-peers-svc.email}"
+}
+
 # Assign the service account the Cloud Run Admin role
 resource "google_project_iam_member" "run_admin" {
   project = var.project_id
@@ -265,8 +271,12 @@ resource "google_cloudbuild_trigger" "default" {
 #   location = var.region     # The region where the service will be located
 #   template {
 #     spec {
+#       # The service account to be used by the service
+#       service_account_name = google_service_account.researchers-peers-svc.email
+
+#       # The Docker image to use for the service
 #       containers {
-#         image = "gcr.io/${google_cloudbuild_trigger.default.project}/${local.app_name}:${google_cloudbuild_trigger.default.substitutions._COMMIT_SHA}" # The Docker image to use for the service
+#         image = "gcr.io/${google_cloudbuild_trigger.default.project}/${local.app_name}:${google_cloudbuild_trigger.default.substitutions._COMMIT_SHA}"
 #       }
 #     }
 #   }

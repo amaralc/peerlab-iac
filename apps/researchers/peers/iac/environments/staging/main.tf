@@ -184,12 +184,12 @@ resource "google_project_iam_member" "run_admin" {
   member  = "serviceAccount:${google_service_account.researchers-peers-svc.email}"
 }
 
-# # Assign the service account the Cloud Run Invoker role
-# resource "google_project_iam_member" "run_invoker" {
-#   project = var.project_id
-#   role    = "roles/run.invoker"
-#   member  = "serviceAccount:${google_service_account.researchers-peers-svc.email}"
-# }
+# Assign the service account the Cloud Run Invoker role
+resource "google_project_iam_member" "run_invoker" {
+  project = var.project_id
+  role    = "roles/run.invoker"
+  member  = "serviceAccount:${google_service_account.researchers-peers-svc.email}"
+}
 
 # # Assign the service account the Cloud Build Editor role
 # resource "google_project_iam_member" "cloudbuild_editor" {

@@ -151,72 +151,6 @@ terraform {
   }
 }
 
-# Define local variables
-locals {
-  service_folder_path = "apps/service-rest-api" # The path to the Dockerfile from the root of the repository
-  app_name            = "service-rest-api"      # The name of the application
-}
-
-resource "google_service_account" "template_service_name_snake_case" {
-  account_id   = "template-service-name"
-  display_name = "Service admin account"
-  project      = var.project_id
-}
-
-# Assign the service account the Cloud Run Admin role
-resource "google_project_iam_member" "run_admin" {
-  project = var.project_id
-  role    = "roles/run.admin"
-  member  = "serviceAccount:${google_service_account.template_service_name_snake_case.email}"
-}
-
-# Assign the service account the Cloud Run Invoker role
-resource "google_project_iam_member" "run_invoker" {
-  project = var.project_id
-  role    = "roles/run.invoker"
-  member  = "serviceAccount:${google_service_account.template_service_name_snake_case.email}"
-}
-
-# Assign the service account the Cloud Build Editor role
-resource "google_project_iam_member" "cloudbuild_editor" {
-  project = var.project_id
-  role    = "roles/cloudbuild.builds.editor"
-  member  = "serviceAccount:${google_service_account.template_service_name_snake_case.email}"
-}
-
-# Create the Service Account Key
-resource "google_service_account_key" "template_service_name_snake_case_key" {
-  service_account_id = google_service_account.template_service_name_snake_case.name
-}
-
-# Create the secret in Secret Manager
-resource "google_secret_manager_secret" "template_service_name_snake_case_secret" {
-  secret_id = "template_service_name_snake_case_secret"
-  project   = var.project_id
-
-  replication {
-    automatic = true
-  }
-}
-
-# Add the service account key as a secret version
-resource "google_secret_manager_secret_version" "template_service_name_snake_case_secret_v1" {
-  secret      = google_secret_manager_secret.template_service_name_snake_case_secret.id
-  secret_data = base64encode(google_service_account_key.template_service_name_snake_case_key.private_key)
-}
-
-# Fetch the service account key from Google Secret Manager
-data "google_secret_manager_secret_version" "template_service_name_snake_case_access_secret" {
-  # The project in which the secret was created
-  project = var.project_id
-
-  # The secret_id corresponds to the name of the secret you created in Secret Manager
-  secret = google_secret_manager_secret.template_service_name_snake_case_secret.secret_id
-
-  # The version of the secret to fetch. "latest" would fetch the latest version of the secret
-  version = "latest"
-}
-
 # Configure the Google Cloud Provider for Terraform
 provider "google" {
   credentials = file(var.credentials_path) # The service account key
@@ -231,52 +165,120 @@ provider "google-beta" {
   region      = var.region                 # The region where resources will be created
 }
 
-# This block defines a Google Cloud Build trigger.
-resource "google_cloudbuild_trigger" "default" {
-  name     = "push-on-branch-staging" # Name of the trigger
-  project  = var.project_id           # The project ID where the trigger will be created
-  disabled = false                    # Whether the trigger is active or not
-
-  github {
-    owner = var.repo_owner # The GitHub owner's username
-    name  = var.repo_name  # The name of the source repository
-
-    push {
-      branch = "^staging$" # This is a regex pattern for the branch name to trigger on. For example, to trigger only on pushes to the main branch, set this to "^main$".
-    }
-  }
-
-  # Instead of referencing the Dockerfile, you reference the cloudbuild.yaml file
-  filename = "${local.service_folder_path}/cloudbuild.yaml"
-
-  # Substitution variables to be replaced within the build config file. _COMMIT_SHA is a built-in substitution variable.
-  substitutions = {
-    _COMMIT_SHA = "$COMMIT_SHA"  # This is the commit SHA that triggered the build
-    _APP_NAME   = local.app_name # This is the name of the application
-  }
+# Define local variables
+locals {
+  service_folder_path = "apps/researchers/peers/svc-rest-api" # The path to the Dockerfile from the root of the repository
+  app_name            = "researchers-peers-svc-rest-api"      # The name of the application
 }
 
-# This block defines a Google Cloud Run service. This service will host the Docker image created by the Google Cloud Build trigger.
-resource "google_cloud_run_service" "default" {
-  name     = local.app_name # Name of the service
-  location = var.region     # The region where the service will be located
-  template {
-    spec {
-      containers {
-        image = "gcr.io/${google_cloudbuild_trigger.default.project}/${local.app_name}:${google_cloudbuild_trigger.default.substitutions._COMMIT_SHA}" # The Docker image to use for the service
-      }
-    }
-  }
-  traffic {
-    percent         = 100  # The percent of traffic this version of the service should receive
-    latest_revision = true # Whether traffic should be directed to the latest revision
-  }
+resource "google_service_account" "researchers-peers-svc" {
+  account_id   = local.app_name
+  display_name = "Service admin account"
+  project      = var.project_id
 }
 
-# This block defines a Cloud Run IAM member. This sets the permissions for who can access the Cloud Run service.
-resource "google_cloud_run_service_iam_member" "public" {
-  service  = google_cloud_run_service.default.name     # The name of the service to which the IAM policy will be applied
-  location = google_cloud_run_service.default.location # The location of the service to which the IAM policy will be applied
-  role     = "roles/run.invoker"                       # The role to be granted
-  member   = "allUsers"                                # The user, group, or service account who will have the role granted. In this case, all users.
+# Assign the service account the Cloud Run Admin role
+resource "google_project_iam_member" "run_admin" {
+  project = var.project_id
+  role    = "roles/run.admin"
+  member  = "serviceAccount:${google_service_account.researchers-peers-svc.email}"
 }
+
+# # Assign the service account the Cloud Run Invoker role
+# resource "google_project_iam_member" "run_invoker" {
+#   project = var.project_id
+#   role    = "roles/run.invoker"
+#   member  = "serviceAccount:${google_service_account.researchers-peers-svc.email}"
+# }
+
+# # Assign the service account the Cloud Build Editor role
+# resource "google_project_iam_member" "cloudbuild_editor" {
+#   project = var.project_id
+#   role    = "roles/cloudbuild.builds.editor"
+#   member  = "serviceAccount:${google_service_account.researchers-peers-svc.email}"
+# }
+
+# # Create the Service Account Key
+# resource "google_service_account_key" "researchers-peers-svc_key" {
+#   service_account_id = google_service_account.researchers-peers-svc.name
+# }
+
+# # Create the secret in Secret Manager
+# resource "google_secret_manager_secret" "researchers-peers-svc_secret" {
+#   secret_id = "researchers-peers-svc_secret"
+#   project   = var.project_id
+
+#   replication {
+#     automatic = true
+#   }
+# }
+
+# # Add the service account key as a secret version
+# resource "google_secret_manager_secret_version" "researchers-peers-svc_secret_v1" {
+#   secret      = google_secret_manager_secret.researchers-peers-svc_secret.id
+#   secret_data = base64encode(google_service_account_key.researchers-peers-svc_key.private_key)
+# }
+
+# # Fetch the service account key from Google Secret Manager
+# data "google_secret_manager_secret_version" "researchers-peers-svc_access_secret" {
+#   # The project in which the secret was created
+#   project = var.project_id
+
+#   # The secret_id corresponds to the name of the secret you created in Secret Manager
+#   secret = google_secret_manager_secret.researchers-peers-svc_secret.secret_id
+
+#   # The version of the secret to fetch. "latest" would fetch the latest version of the secret
+#   version = "latest"
+# }
+
+
+
+# # This block defines a Google Cloud Build trigger.
+# resource "google_cloudbuild_trigger" "default" {
+#   name     = "push-on-branch-staging" # Name of the trigger
+#   project  = var.project_id           # The project ID where the trigger will be created
+#   disabled = false                    # Whether the trigger is active or not
+
+#   github {
+#     owner = var.repo_owner # The GitHub owner's username
+#     name  = var.repo_name  # The name of the source repository
+
+#     push {
+#       branch = "^staging$" # This is a regex pattern for the branch name to trigger on. For example, to trigger only on pushes to the main branch, set this to "^main$".
+#     }
+#   }
+
+#   # Instead of referencing the Dockerfile, you reference the cloudbuild.yaml file
+#   filename = "${local.service_folder_path}/cloudbuild.yaml"
+
+#   # Substitution variables to be replaced within the build config file. _COMMIT_SHA is a built-in substitution variable.
+#   substitutions = {
+#     _COMMIT_SHA = "$COMMIT_SHA"  # This is the commit SHA that triggered the build
+#     _APP_NAME   = local.app_name # This is the name of the application
+#   }
+# }
+
+# # This block defines a Google Cloud Run service. This service will host the Docker image created by the Google Cloud Build trigger.
+# resource "google_cloud_run_service" "default" {
+#   name     = local.app_name # Name of the service
+#   location = var.region     # The region where the service will be located
+#   template {
+#     spec {
+#       containers {
+#         image = "gcr.io/${google_cloudbuild_trigger.default.project}/${local.app_name}:${google_cloudbuild_trigger.default.substitutions._COMMIT_SHA}" # The Docker image to use for the service
+#       }
+#     }
+#   }
+#   traffic {
+#     percent         = 100  # The percent of traffic this version of the service should receive
+#     latest_revision = true # Whether traffic should be directed to the latest revision
+#   }
+# }
+
+# # This block defines a Cloud Run IAM member. This sets the permissions for who can access the Cloud Run service.
+# resource "google_cloud_run_service_iam_member" "public" {
+#   service  = google_cloud_run_service.default.name     # The name of the service to which the IAM policy will be applied
+#   location = google_cloud_run_service.default.location # The location of the service to which the IAM policy will be applied
+#   role     = "roles/run.invoker"                       # The role to be granted
+#   member   = "allUsers"                                # The user, group, or service account who will have the role granted. In this case, all users.
+# }

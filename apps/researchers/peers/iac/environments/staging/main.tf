@@ -191,12 +191,12 @@ resource "google_project_iam_member" "run_invoker" {
   member  = "serviceAccount:${google_service_account.researchers-peers-svc.email}"
 }
 
-# # Assign the service account the Cloud Build Editor role
-# resource "google_project_iam_member" "cloudbuild_editor" {
-#   project = var.project_id
-#   role    = "roles/cloudbuild.builds.editor"
-#   member  = "serviceAccount:${google_service_account.researchers-peers-svc.email}"
-# }
+# Assign the service account the Cloud Build Editor role
+resource "google_project_iam_member" "cloudbuild_editor" {
+  project = var.project_id
+  role    = "roles/cloudbuild.builds.editor"
+  member  = "serviceAccount:${google_service_account.researchers-peers-svc.email}"
+}
 
 # # Create the Service Account Key
 # resource "google_service_account_key" "researchers-peers-svc_key" {

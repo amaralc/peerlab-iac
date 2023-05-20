@@ -213,11 +213,11 @@ resource "google_secret_manager_secret" "researchers-peers-svc-secret" {
   }
 }
 
-# # Add the service account key as a secret version
-# resource "google_secret_manager_secret_version" "researchers-peers-svc-secret_v1" {
-#   secret      = google_secret_manager_secret.researchers-peers-svc-secret.id
-#   secret_data = base64encode(google_service_account_key.researchers-peers-svc-key.private_key)
-# }
+# Add the service account key as a secret version
+resource "google_secret_manager_secret_version" "researchers-peers-svc-secret-v1" {
+  secret      = google_secret_manager_secret.researchers-peers-svc-secret.id
+  secret_data = base64encode(google_service_account_key.researchers-peers-svc-key.private_key)
+}
 
 # # Fetch the service account key from Google Secret Manager
 # data "google_secret_manager_secret_version" "researchers-peers-svc_access_secret" {

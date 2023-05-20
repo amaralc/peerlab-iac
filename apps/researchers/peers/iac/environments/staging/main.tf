@@ -198,10 +198,10 @@ resource "google_project_iam_member" "cloudbuild_editor" {
   member  = "serviceAccount:${google_service_account.researchers-peers-svc.email}"
 }
 
-# # Create the Service Account Key
-# resource "google_service_account_key" "researchers-peers-svc_key" {
-#   service_account_id = google_service_account.researchers-peers-svc.name
-# }
+# Create the Service Account Key
+resource "google_service_account_key" "researchers-peers-svc_key" {
+  service_account_id = google_service_account.researchers-peers-svc.name
+}
 
 # # Create the secret in Secret Manager
 # resource "google_secret_manager_secret" "researchers-peers-svc_secret" {

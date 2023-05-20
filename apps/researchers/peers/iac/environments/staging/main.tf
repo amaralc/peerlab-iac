@@ -297,26 +297,26 @@ resource "google_cloudbuild_trigger" "default" {
 }
 
 
-# This block defines a Google Cloud Run service. This service will host the Docker image created by the Google Cloud Build trigger.
-resource "google_cloud_run_service" "default" {
-  name     = local.app_name # Name of the service
-  location = var.region     # The region where the service will be located
-  template {
-    spec {
-      # The service account to be used by the service
-      service_account_name = google_service_account.researchers-peers-svc.email
+# # This block defines a Google Cloud Run service. This service will host the Docker image created by the Google Cloud Build trigger.
+# resource "google_cloud_run_service" "default" {
+#   name     = local.app_name # Name of the service
+#   location = var.region     # The region where the service will be located
+#   template {
+#     spec {
+#       # The service account to be used by the service
+#       service_account_name = google_service_account.researchers-peers-svc.email
 
-      # The Docker image to use for the service
-      containers {
-        image = "gcr.io/${google_cloudbuild_trigger.default.project}/${local.app_name}:${var.commit_sha}"
-      }
-    }
-  }
-  traffic {
-    percent         = 100  # The percent of traffic this version of the service should receive
-    latest_revision = true # Whether traffic should be directed to the latest revision
-  }
-}
+#       # The Docker image to use for the service
+#       containers {
+#         image = "gcr.io/${google_cloudbuild_trigger.default.project}/${local.app_name}:${var.commit_sha}"
+#       }
+#     }
+#   }
+#   traffic {
+#     percent         = 100  # The percent of traffic this version of the service should receive
+#     latest_revision = true # Whether traffic should be directed to the latest revision
+#   }
+# }
 
 # # This block defines a Cloud Run IAM member. This sets the permissions for who can access the Cloud Run service.
 # resource "google_cloud_run_service_iam_member" "public" {

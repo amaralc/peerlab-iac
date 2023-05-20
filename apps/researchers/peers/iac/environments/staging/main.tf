@@ -167,8 +167,8 @@ provider "google-beta" {
 
 # Define local variables
 locals {
-  service_folder_path = "apps/researchers/peers/svc-rest-api" # The path to the Dockerfile from the root of the repository
-  app_name            = "researchers-peers-svc-rest-api"      # The name of the application
+  service_folder_path = "apps/researchers/peers/svc"     # The path to the Dockerfile from the root of the repository
+  app_name            = "researchers-peers-svc-rest-api" # The name of the application
 }
 
 resource "google_service_account" "researchers-peers-svc" {

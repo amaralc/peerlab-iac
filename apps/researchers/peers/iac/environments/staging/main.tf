@@ -240,30 +240,62 @@ data "google_secret_manager_secret_version" "researchers-peers-svc_access_secret
   depends_on = [google_secret_manager_secret_version.researchers-peers-svc-secret-v1]
 }
 
-# This block defines a Google Cloud Build trigger.
+# Resource that represents a Google Cloud Build trigger
 resource "google_cloudbuild_trigger" "default" {
-  name     = "push-on-branch-feature-DIS-522-move-to-gcp" # Name of the trigger
-  project  = var.project_id                               # The project ID where the trigger will be created
-  disabled = false                                        # Whether the trigger is active or not
+  # Name of the trigger
+  name = "push-on-branch-feature-DIS-522-move-to-gcp"
+  # Project ID where the trigger will be created
+  project = var.project_id
+  # Whether the trigger is active or not
+  disabled = false
 
+  # GitHub configuration
   github {
-    owner = var.repo_owner # The GitHub owner's username
-    name  = var.repo_name  # The name of the source repository
+    # GitHub owner's username
+    owner = var.repo_owner
+    # Name of the source repository
+    name = var.repo_name
 
+    # Configuration for triggering on a push to a specific branch
     push {
-      branch = "^feature/DIS-522-move-to-gcp$" # This is a regex pattern for the branch name to trigger on. For example, to trigger only on pushes to the main branch, set this to "^main$".
+      # Regex pattern for the branch name to trigger on
+      branch = "^feature/DIS-522-move-to-gcp$"
     }
   }
 
-  # Instead of referencing the Dockerfile, you reference the cloudbuild.yaml file
-  filename = "${local.service_folder_path}/cloudbuild.yaml"
 
-  # Substitution variables to be replaced within the build config file. _COMMIT_SHA is a built-in substitution variable.
-  substitutions = {
-    _COMMIT_SHA = "$COMMIT_SHA"  # This is the commit SHA that triggered the build
-    _APP_NAME   = local.app_name # This is the name of the application
+  # List of file/directory patterns in the source repository that are included in the source. Here, it includes all files and directories.
+  included_files = [
+    "**"
+  ]
+
+  # Defines the build configuration
+  build {
+    # Each step in the build is represented as a list of commands
+    step {
+      # Name of the builder (the Docker image on Google Cloud) that will execute this build step
+      name = "gcr.io/cloud-builders/docker"
+      # Arguments to pass to the build step
+      args = [
+        "build",                                                  # Docker command to build an image from a Dockerfile
+        "-t",                                                     # Tag the image with a name and optionally a tag in the 'name:tag' format
+        "gcr.io/${var.project_id}/${local.app_name}:latest",      # Tag the image with the latest tag
+        "-t",                                                     # Tag the image with a name and optionally a tag in the 'name:tag' format
+        "gcr.io/${var.project_id}/${local.app_name}:$COMMIT_SHA", # Tag the image with the built-in commit SHA variable that triggered the build
+        "-f",                                                     # Name of the Dockerfile (Default is 'PATH/Dockerfile')
+        "${local.service_folder_path}/Dockerfile",                # Path to the Dockerfile
+        ".",                                                      # The build context is the current directory
+      ]
+    }
+
+    # List of Docker images to be pushed to the registry upon successful completion of all build steps
+    images = [
+      "gcr.io/${var.project_id}/${local.app_name}:latest",     # Image with the latest tag
+      "gcr.io/${var.project_id}/${local.app_name}:$COMMIT_SHA" # Image with the commit SHA tag
+    ]
   }
 }
+
 
 # # This block defines a Google Cloud Run service. This service will host the Docker image created by the Google Cloud Build trigger.
 # resource "google_cloud_run_service" "default" {

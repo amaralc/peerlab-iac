@@ -1,0 +1,83 @@
+{
+  "name": "core-peers-iac",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/core/peers/iac",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/next:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "root": "apps/core/peers/iac",
+        "outputPath": "dist/apps/core/peers/iac"
+      },
+      "configurations": {
+        "development": {
+          "outputPath": "apps/core/peers/iac"
+        },
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/next:server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "core-peers-iac:build",
+        "dev": true,
+        "port": 4200
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "core-peers-iac:build:development",
+          "dev": true
+        },
+        "production": {
+          "buildTarget": "core-peers-iac:build:production",
+          "dev": false
+        }
+      }
+    },
+    "export": {
+      "executor": "@nx/next:export",
+      "options": {
+        "buildTarget": "core-peers-iac:build:production"
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/core/peers/iac/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/core/peers/iac/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "e2e": {
+      "executor": "@nx/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/core/peers/iac/cypress.config.ts",
+        "testingType": "e2e",
+        "devServerTarget": "core-peers-iac:serve"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "core-peers-iac:serve:production"
+        }
+      }
+    }
+  },
+  "tags": []
+}

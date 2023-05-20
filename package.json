@@ -45,7 +45,6 @@
     "@nrwl/js": "16.2.1",
     "@nrwl/linter": "16.2.1",
     "@nrwl/node": "16.2.1",
-    "@nrwl/react": "16.2.1",
     "@nrwl/webpack": "16.2.1",
     "@nrwl/workspace": "16.2.1",
     "@testing-library/react": "14.0.0",
@@ -74,7 +73,8 @@
     "react-test-renderer": "18.2.0",
     "ts-jest": "29.1.0",
     "ts-node": "10.9.1",
-    "typescript": "5.0.4"
+    "typescript": "5.0.4",
+    "@nx/react": "16.2.1"
   },
   "dependencies": {
     "@commitlint/cli": "^17.4.2",

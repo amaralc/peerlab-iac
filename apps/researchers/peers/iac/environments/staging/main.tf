@@ -199,7 +199,7 @@ resource "google_project_iam_member" "cloudbuild_editor" {
 }
 
 # Create the Service Account Key
-resource "google_service_account_key" "researchers-peers-svc_key" {
+resource "google_service_account_key" "researchers-peers-svc-key" {
   service_account_id = google_service_account.researchers-peers-svc.name
 }
 
@@ -216,7 +216,7 @@ resource "google_secret_manager_secret" "researchers-peers-svc-secret" {
 # # Add the service account key as a secret version
 # resource "google_secret_manager_secret_version" "researchers-peers-svc-secret_v1" {
 #   secret      = google_secret_manager_secret.researchers-peers-svc-secret.id
-#   secret_data = base64encode(google_service_account_key.researchers-peers-svc_key.private_key)
+#   secret_data = base64encode(google_service_account_key.researchers-peers-svc-key.private_key)
 # }
 
 # # Fetch the service account key from Google Secret Manager

@@ -88,6 +88,8 @@ References:
 
 - Consume 'plan-subscription-created' topic and add a new user to the database;
 
+# Infrastructure as Code (IaC)
+
 # Lessons Learned
 
 - Use nx migrate; Use commit prefix option; It is worth it.

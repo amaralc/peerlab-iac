@@ -10,7 +10,7 @@ import { RootState } from '../../../data';
 
 import { PeerEntity } from '@peerlab/researchers/peers/core/domains/peers/entities/peer/entity';
 import axios from 'axios';
-import { GetPeersResponseDto } from '../../../../controllers/api/routes/peers/get-peers-response.dto';
+import { GetPeersResponseDto } from '../../../../controllers/rest-api/routes/peers/get-peers-response.dto';
 
 export const PEERS_FEATURE_KEY = 'peers';
 

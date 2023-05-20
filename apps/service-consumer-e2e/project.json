@@ -4,7 +4,7 @@
   "implicitDependencies": ["service-consumer"],
   "targets": {
     "e2e": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{e2eProjectRoot}"],
       "options": {
         "jestConfig": "apps/service-consumer-e2e/jest.config.ts",

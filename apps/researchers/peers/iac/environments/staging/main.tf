@@ -251,7 +251,7 @@ resource "google_cloudbuild_trigger" "default" {
     name  = var.repo_name  # The name of the source repository
 
     push {
-      branch = "^staging$" # This is a regex pattern for the branch name to trigger on. For example, to trigger only on pushes to the main branch, set this to "^main$".
+      branch = "^feature/DIS-522-move-to-gcp$" # This is a regex pattern for the branch name to trigger on. For example, to trigger only on pushes to the main branch, set this to "^main$".
     }
   }
 

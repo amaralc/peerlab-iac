@@ -234,32 +234,30 @@ data "google_secret_manager_secret_version" "researchers-peers-svc_access_secret
   depends_on = [google_secret_manager_secret_version.researchers-peers-svc-secret-v1]
 }
 
+# This block defines a Google Cloud Build trigger.
+resource "google_cloudbuild_trigger" "default" {
+  name     = "push-on-branch-staging" # Name of the trigger
+  project  = var.project_id           # The project ID where the trigger will be created
+  disabled = false                    # Whether the trigger is active or not
 
+  github {
+    owner = var.repo_owner # The GitHub owner's username
+    name  = var.repo_name  # The name of the source repository
 
-# # This block defines a Google Cloud Build trigger.
-# resource "google_cloudbuild_trigger" "default" {
-#   name     = "push-on-branch-staging" # Name of the trigger
-#   project  = var.project_id           # The project ID where the trigger will be created
-#   disabled = false                    # Whether the trigger is active or not
+    push {
+      branch = "^staging$" # This is a regex pattern for the branch name to trigger on. For example, to trigger only on pushes to the main branch, set this to "^main$".
+    }
+  }
 
-#   github {
-#     owner = var.repo_owner # The GitHub owner's username
-#     name  = var.repo_name  # The name of the source repository
+  # Instead of referencing the Dockerfile, you reference the cloudbuild.yaml file
+  filename = "${local.service_folder_path}/cloudbuild.yaml"
 
-#     push {
-#       branch = "^staging$" # This is a regex pattern for the branch name to trigger on. For example, to trigger only on pushes to the main branch, set this to "^main$".
-#     }
-#   }
-
-#   # Instead of referencing the Dockerfile, you reference the cloudbuild.yaml file
-#   filename = "${local.service_folder_path}/cloudbuild.yaml"
-
-#   # Substitution variables to be replaced within the build config file. _COMMIT_SHA is a built-in substitution variable.
-#   substitutions = {
-#     _COMMIT_SHA = "$COMMIT_SHA"  # This is the commit SHA that triggered the build
-#     _APP_NAME   = local.app_name # This is the name of the application
-#   }
-# }
+  # Substitution variables to be replaced within the build config file. _COMMIT_SHA is a built-in substitution variable.
+  substitutions = {
+    _COMMIT_SHA = "$COMMIT_SHA"  # This is the commit SHA that triggered the build
+    _APP_NAME   = local.app_name # This is the name of the application
+  }
+}
 
 # # This block defines a Google Cloud Run service. This service will host the Docker image created by the Google Cloud Build trigger.
 # resource "google_cloud_run_service" "default" {

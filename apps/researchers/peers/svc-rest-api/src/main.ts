@@ -7,7 +7,7 @@ import { INestApplication, Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { configDto } from '@peerlab/researchers/peers/adapters/config.dto';
-import { ApiModule } from '@peerlab/researchers/peers/adapters/controllers/api/api.module';
+import { ApiModule } from '@peerlab/researchers/peers/adapters/controllers/rest-api/api.module';
 import { ApiKeyGuard } from './guards/api-key.guard';
 
 const setupOpenApi = (app: INestApplication) => {

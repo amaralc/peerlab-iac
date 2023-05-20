@@ -203,19 +203,19 @@ resource "google_service_account_key" "researchers-peers-svc_key" {
   service_account_id = google_service_account.researchers-peers-svc.name
 }
 
-# # Create the secret in Secret Manager
-# resource "google_secret_manager_secret" "researchers-peers-svc_secret" {
-#   secret_id = "researchers-peers-svc_secret"
-#   project   = var.project_id
+# Create the secret in Secret Manager
+resource "google_secret_manager_secret" "researchers-peers-svc-secret" {
+  secret_id = "researchers-peers-svc-secret"
+  project   = var.project_id
 
-#   replication {
-#     automatic = true
-#   }
-# }
+  replication {
+    automatic = true
+  }
+}
 
 # # Add the service account key as a secret version
-# resource "google_secret_manager_secret_version" "researchers-peers-svc_secret_v1" {
-#   secret      = google_secret_manager_secret.researchers-peers-svc_secret.id
+# resource "google_secret_manager_secret_version" "researchers-peers-svc-secret_v1" {
+#   secret      = google_secret_manager_secret.researchers-peers-svc-secret.id
 #   secret_data = base64encode(google_service_account_key.researchers-peers-svc_key.private_key)
 # }
 
@@ -225,7 +225,7 @@ resource "google_service_account_key" "researchers-peers-svc_key" {
 #   project = var.project_id
 
 #   # The secret_id corresponds to the name of the secret you created in Secret Manager
-#   secret = google_secret_manager_secret.researchers-peers-svc_secret.secret_id
+#   secret = google_secret_manager_secret.researchers-peers-svc-secret.secret_id
 
 #   # The version of the secret to fetch. "latest" would fetch the latest version of the secret
 #   version = "latest"

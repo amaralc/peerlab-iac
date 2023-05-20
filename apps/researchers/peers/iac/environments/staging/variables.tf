@@ -37,3 +37,8 @@ variable "credentials_path" {
   type        = string
   default     = "credentials.json"
 }
+
+variable "commit_sha" {
+  description = "The Git commit SHA"
+  type        = string
+}

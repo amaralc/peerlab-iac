@@ -50,10 +50,10 @@ terraform-plan-staging:
 	cd apps/researchers/peers/iac/environments/staging && terraform plan
 
 terraform-apply-staging:
-	cd apps/researchers/peers/iac/environments/staging && terraform apply
+	cd apps/researchers/peers/iac/environments/staging && COMMIT_SHA=$$(git rev-parse HEAD) && terraform apply -var="commit_sha=$${COMMIT_SHA}"
 
 terraform-apply-staging-auto-approve:
-	cd apps/researchers/peers/iac/environments/staging && terraform apply -auto-approve
+	cd apps/researchers/peers/iac/environments/staging && COMMIT_SHA=$$(git rev-parse HEAD) && terraform apply -var="commit_sha=$${COMMIT_SHA}" -auto-approve
 
 terraform-plan-staging-out:
 	cd apps/researchers/peers/iac/environments/staging && terraform plan -out=tfplan

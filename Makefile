@@ -15,11 +15,11 @@ config:
 
 researchers-peers-svc-docker-build:
 #	sudo docker build -t researchers-peers-svc:latest --build-arg SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)" --no-cache .
-	sudo docker build -t researchers-peers-svc:latest -f apps/service-rest-api/Dockerfile .
+	sudo docker build -t researchers-peers-svc:latest -f apps/researchers/peers/svc/Dockerfile .
 
 researchers-peers-svc-docker-build-no-cache:
 #	sudo docker build -t researchers-peers-svc:latest --build-arg SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)" --no-cache .
-	sudo docker build -t researchers-peers-svc:latest -f apps/service-rest-api/Dockerfile --no-cache .
+	sudo docker build -t researchers-peers-svc:latest -f apps/researchers/peers/svc/Dockerfile --no-cache .
 
 researchers-peers-svc-rest-api-docker-run:
 	docker run -it --rm -p 8080:8080 researchers-peers-svc:latest bash entrypoints/run-rest-api.sh
@@ -42,46 +42,6 @@ researchers-peers-svc-consumer-with-api-serve:
 researchers-peers-svc-consumer-serve:
 	# The .env in root folder make it possible to use env variables within .env file
 	cp .env.example .env && make auth-prisma-postgresql-setup && nx serve service-consumer
-
-# Fly
-fly-launch:
-	cd apps/service-rest-api && fly launch
-
-fly-deploy:
-	cd apps/service-rest-api && fly deploy
-
-fly-logs:
-	cd apps/service-rest-api && fly logs
-
-fly-status:
-	cd apps/service-rest-api && fly status
-
-fly-status-watch:
-	cd apps/service-rest-api && fly status --watch
-
-fly-open:
-	cd apps/service-rest-api && fly open
-
-fly-volume-create-data:
-	cd apps/service-rest-api && fly vol create data --region gru --size 1
-
-fly-volumes-list:
-	cd apps/service-rest-api && fly volumes list
-
-fly-apps-list:
-	cd apps/service-rest-api && fly apps list
-
-fly-apps-destroy:
-	cd apps/service-rest-api && fly apps destroy black-fog-4181
-
-fly-mount-volume:
-	cd apps/service-rest-api && fly m run . -v vol_xme149kwxy3vowpl:/data
-
-fly-secrets-set:
-	cd apps/service-rest-api && fly secrets set
-
-fly-secrets-list:
-	fly secrets list
 
 terraform-init-staging:
 	cd apps/researchers/peers/iac/environments/staging && terraform init

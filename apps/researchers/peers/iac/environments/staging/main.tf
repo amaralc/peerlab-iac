@@ -82,7 +82,7 @@
 #     command = <<EOF
 #       cd ../../ &&
 #       flyctl auth docker &&
-#       docker build -t registry.fly.io/${local.app_name}:${local.image_tag} -f apps/service-rest-api/Dockerfile . &&
+#       docker build -t registry.fly.io/${local.app_name}:${local.image_tag} -f apps/researchers/peers/svc/Dockerfile . &&
 #       docker push registry.fly.io/${local.app_name}:${local.image_tag}
 #     EOF
 #   }

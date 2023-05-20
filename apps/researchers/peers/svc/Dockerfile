@@ -72,7 +72,7 @@ ENV PORT="8080"
 ENV NODE_ENV="production"
 
 ## Database provider ("mongodb-mongoose-orm" | "postgresql-prisma-orm" | "postgresql-type-orm" |  "in-memory")
-ENV DATABASE_PROVIDER=postgresql-prisma-orm
+ENV DATABASE_PROVIDER=in-memory
 
 ## Events provider ('kafka' | 'in-memory')
 ENV EVENTS_PROVIDER=in-memory

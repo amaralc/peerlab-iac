@@ -1,0 +1,9 @@
+{
+  "name": "core-peers-svc-e2e",
+  "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/core/peers/svc/e2e",
+  "projectType": "application",
+  "implicitDependencies": ["core-peers-svc-rest-api", "core-peers-svc-consumer"],
+  "targets": {},
+  "tags": []
+}

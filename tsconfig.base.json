@@ -16,7 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "@adapters/*": ["libs/adapters/src/*"],
-      "@core/*": ["libs/core/src/*"]
+      "@core/*": ["libs/core/src/*"],
+      "@peerlab/core/peers/svc-e2e/*": ["apps/core/peers/svc-e2e/src/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

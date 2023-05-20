@@ -1,5 +1,5 @@
 {
-  "name": "micro-applications-template",
+  "name": "peerlab",
   "version": "0.7.0",
   "license": "MIT",
   "author": {
@@ -30,7 +30,7 @@
     "service-consumer:serve": "make service-consumer-serve",
     "start": "yarn nx run-many --target=serve --all=true",
     "start:back-end": "nx run-many --target=serve --projects=service-rest-api,service-consumer --parallel --maxParallel=2",
-    "e2e:back-end": "nx e2e service-rest-api-e2e",
+    "e2e:back-end": "nx e2e core-peers-svc-e2e",
     "e2e:front-end": "nx e2e service-mfe-e2e"
   },
   "private": true,

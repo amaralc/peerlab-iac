@@ -1,0 +1,62 @@
+{
+  "name": "core-peers-svc-consumer",
+  "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/core/peers/svc/consumer/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/core/peers/svc/consumer",
+        "main": "apps/core/peers/svc/consumer/src/main.ts",
+        "tsConfig": "apps/core/peers/svc/consumer/tsconfig.app.json",
+        "assets": ["apps/core/peers/svc/consumer/src/assets"],
+        "webpackConfig": "apps/core/peers/svc/consumer/webpack.config.js",
+        "babelUpwardRootMode": true
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "options": {
+        "buildTarget": "core-peers-svc-consumer:build"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "core-peers-svc-consumer:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/core/peers/svc/consumer/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/core/peers/svc/consumer/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": []
+}

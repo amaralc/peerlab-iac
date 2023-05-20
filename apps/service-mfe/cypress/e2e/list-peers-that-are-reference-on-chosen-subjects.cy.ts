@@ -33,3 +33,5 @@ describe('List peers that are reference on chosen subjects', () => {
       });
   });
 });
+
+export {};

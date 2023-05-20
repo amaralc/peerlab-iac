@@ -64,6 +64,19 @@
       "options": {
         "lintFilePatterns": ["apps/service-mfe/**/*.{ts,tsx,js,jsx}"]
       }
+    },
+    "e2e": {
+      "executor": "@nx/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/service-mfe/cypress.config.ts",
+        "testingType": "e2e",
+        "devServerTarget": "service-mfe:serve"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "service-mfe:serve:production"
+        }
+      }
     }
   },
   "tags": []

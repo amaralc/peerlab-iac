@@ -169,6 +169,25 @@ provider "google-beta" {
 locals {
   service_folder_path = "apps/researchers/peers/svc"     # The path to the Dockerfile from the root of the repository
   app_name            = "researchers-peers-svc-rest-api" # The name of the application
+  commit_hash_file    = "${path.module}/.commit_hash"    # The file where the commit hash will be stored
+}
+
+# Fetch the current commit hash and write it to a file
+resource "null_resource" "get_commit_hash" {
+  provisioner "local-exec" {
+    command = "git rev-parse --short HEAD > ${local.commit_hash_file}" // TODO: Use full commit hash?
+  }
+}
+
+# Read the commit hash from the file
+data "local_file" "commit_hash" {
+  filename   = local.commit_hash_file
+  depends_on = [null_resource.get_commit_hash]
+}
+
+# Trim the commit hash and store it in a local variable (for use in cloud run)
+locals {
+  image_tag = trimspace(data.local_file.commit_hash.content)
 }
 
 resource "google_service_account" "researchers-peers-svc" {
@@ -240,19 +259,22 @@ data "google_secret_manager_secret_version" "researchers-peers-svc_access_secret
   depends_on = [google_secret_manager_secret_version.researchers-peers-svc-secret-v1]
 }
 
-# Resource that represents a Google Cloud Build trigger
+# This resource block defines a Google Cloud Build trigger that will react to pushes on the branch "feature/DIS-522-move-to-gcp"
 resource "google_cloudbuild_trigger" "default" {
   # Name of the trigger
   name = "push-on-branch-feature-DIS-522-move-to-gcp"
+
   # Project ID where the trigger will be created
   project = var.project_id
-  # Whether the trigger is active or not
+
+  # Disable status of the trigger
   disabled = false
 
   # GitHub configuration
   github {
     # GitHub owner's username
     owner = var.repo_owner
+
     # Name of the source repository
     name = var.repo_name
 
@@ -263,11 +285,8 @@ resource "google_cloudbuild_trigger" "default" {
     }
   }
 
-
   # List of file/directory patterns in the source repository that are included in the source. Here, it includes all files and directories.
-  included_files = [
-    "**"
-  ]
+  included_files = ["**"]
 
   # Defines the build configuration
   build {
@@ -275,32 +294,38 @@ resource "google_cloudbuild_trigger" "default" {
     step {
       # Name of the builder (the Docker image on Google Cloud) that will execute this build step
       name = "gcr.io/cloud-builders/docker"
+
       # Arguments to pass to the build step
       args = [
-        "build",                                                  # Docker command to build an image from a Dockerfile
-        "-t",                                                     # Tag the image with a name and optionally a tag in the 'name:tag' format
-        "gcr.io/${var.project_id}/${local.app_name}:latest",      # Tag the image with the latest tag
-        "-t",                                                     # Tag the image with a name and optionally a tag in the 'name:tag' format
-        "gcr.io/${var.project_id}/${local.app_name}:$COMMIT_SHA", # Tag the image with the built-in commit SHA variable that triggered the build
-        "-f",                                                     # Name of the Dockerfile (Default is 'PATH/Dockerfile')
-        "${local.service_folder_path}/Dockerfile",                # Path to the Dockerfile
-        ".",                                                      # The build context is the current directory
+        "build",                                                         # Docker command to build an image from a Dockerfile
+        "-t",                                                            # Tag the image with a name and optionally a tag in the 'name:tag' format
+        "gcr.io/${var.project_id}/${local.app_name}:latest",             # Tag the image with the latest tag
+        "-t",                                                            # Tag the image with a name and optionally a tag in the 'name:tag' format
+        "gcr.io/${var.project_id}/${local.app_name}:${local.image_tag}", # Tag the image with the commit SHA
+        "-f",                                                            # Name of the Dockerfile (Default is 'PATH/Dockerfile')
+        "${local.service_folder_path}/Dockerfile",                       # Path to the Dockerfile
+        ".",                                                             # The build context is the current directory
       ]
     }
 
     # List of Docker images to be pushed to the registry upon successful completion of all build steps
     images = [
-      "gcr.io/${var.project_id}/${local.app_name}:latest",     # Image with the latest tag
-      "gcr.io/${var.project_id}/${local.app_name}:$COMMIT_SHA" # Image with the commit SHA tag
+      "gcr.io/${var.project_id}/${local.app_name}:latest",            # Image with the latest tag
+      "gcr.io/${var.project_id}/${local.app_name}:${local.image_tag}" # Image with the commit SHA tag
     ]
   }
 }
 
 
-# # This block defines a Google Cloud Run service. This service will host the Docker image created by the Google Cloud Build trigger.
+# # This resource block defines a Google Cloud Run service. This service will host the Docker image created by the Google Cloud Build trigger.
 # resource "google_cloud_run_service" "default" {
-#   name     = local.app_name # Name of the service
-#   location = var.region     # The region where the service will be located
+#   # Name of the service
+#   name = local.app_name
+
+#   # The region where the service will be located
+#   location = var.region
+
+#   # Defining the service template
 #   template {
 #     spec {
 #       # The service account to be used by the service
@@ -308,14 +333,22 @@ resource "google_cloudbuild_trigger" "default" {
 
 #       # The Docker image to use for the service
 #       containers {
-#         image = "gcr.io/${google_cloudbuild_trigger.default.project}/${local.app_name}:${var.commit_sha}"
+#         # The docker image is pulled from GCR using the project ID, app name and the image tag which corresponds to the commit hash
+#         image = "gcr.io/${google_cloudbuild_trigger.default.project}/${local.app_name}:${local.image_tag}"
 #       }
 #     }
 #   }
+
+#   # Defines the service traffic parameters
 #   traffic {
-#     percent         = 100  # The percent of traffic this version of the service should receive
-#     latest_revision = true # Whether traffic should be directed to the latest revision
+#     # The percent of traffic this version of the service should receive
+#     percent = 100
+
+#     # Whether traffic should be directed to the latest revision
+#     latest_revision = true
 #   }
+
+#   depends_on = [google_cloudbuild_trigger.default]
 # }
 
 # # This block defines a Cloud Run IAM member. This sets the permissions for who can access the Cloud Run service.

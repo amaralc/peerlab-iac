@@ -219,17 +219,20 @@ resource "google_secret_manager_secret_version" "researchers-peers-svc-secret-v1
   secret_data = base64encode(google_service_account_key.researchers-peers-svc-key.private_key)
 }
 
-# # Fetch the service account key from Google Secret Manager
-# data "google_secret_manager_secret_version" "researchers-peers-svc_access_secret" {
-#   # The project in which the secret was created
-#   project = var.project_id
+# Fetch the service account key from Google Secret Manager
+data "google_secret_manager_secret_version" "researchers-peers-svc_access_secret" {
+  # The project in which the secret was created
+  project = var.project_id
 
-#   # The secret_id corresponds to the name of the secret you created in Secret Manager
-#   secret = google_secret_manager_secret.researchers-peers-svc-secret.secret_id
+  # The secret_id corresponds to the name of the secret you created in Secret Manager
+  secret = google_secret_manager_secret.researchers-peers-svc-secret.secret_id
 
-#   # The version of the secret to fetch. "latest" would fetch the latest version of the secret
-#   version = "latest"
-# }
+  # The version of the secret to fetch. "latest" would fetch the latest version of the secret
+  version = "latest"
+
+  # Waits for the secret to be available
+  depends_on = [google_secret_manager_secret_version.researchers-peers-svc-secret-v1]
+}
 
 
 

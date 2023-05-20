@@ -90,7 +90,6 @@
     "@nestjs/platform-express": "9.4.1",
     "@nestjs/swagger": "6.3.0",
     "@nrwl/nest": "16.2.1",
-    "@nrwl/next": "16.2.1",
     "@prisma/client": "^4.10.1",
     "@reduxjs/toolkit": "^1.9.3",
     "axios": "^1.0.0",
@@ -107,7 +106,8 @@
     "redux": "^4.2.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.0.0",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "@nx/next": "16.2.1"
   },
   "volta": {
     "node": "18.16.0",

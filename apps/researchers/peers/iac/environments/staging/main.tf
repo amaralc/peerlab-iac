@@ -242,9 +242,9 @@ data "google_secret_manager_secret_version" "researchers-peers-svc_access_secret
 
 # This block defines a Google Cloud Build trigger.
 resource "google_cloudbuild_trigger" "default" {
-  name     = "push-on-branch-staging" # Name of the trigger
-  project  = var.project_id           # The project ID where the trigger will be created
-  disabled = false                    # Whether the trigger is active or not
+  name     = "push-on-branch-feature/DIS-522-move-to-gcp" # Name of the trigger
+  project  = var.project_id                               # The project ID where the trigger will be created
+  disabled = false                                        # Whether the trigger is active or not
 
   github {
     owner = var.repo_owner # The GitHub owner's username

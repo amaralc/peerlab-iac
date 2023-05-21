@@ -103,9 +103,6 @@ resource "google_cloudbuild_trigger" "default" {
   # Disable status of the trigger
   disabled = false
 
-  # List files to be watched for changes
-  included_files = ["apps/researchers/peers/**", "libs/researchers/peers/**"]
-
   # GitHub configuration
   github {
     # GitHub owner's username
@@ -121,6 +118,9 @@ resource "google_cloudbuild_trigger" "default" {
     }
   }
 
+  # List of file/directory patterns in the source repository that are included in the source. Here, it includes all files and directories.
+  included_files = ["**"]
+
   # Defines the build configuration
   build {
     # Each step in the build is represented as a list of commands
@@ -130,21 +130,21 @@ resource "google_cloudbuild_trigger" "default" {
 
       # Arguments to pass to the build step
       args = [
-        "build",                                                     # Docker command to build an image from a Dockerfile
-        "-t",                                                        # Tag the image with a name and optionally a tag in the 'name:tag' format
-        "gcr.io/${var.project_id}/${local.app_name}:latest",         # Tag the image with the latest tag
-        "-t",                                                        # Tag the image with a name and optionally a tag in the 'name:tag' format
-        "gcr.io/${var.project_id}/${local.app_name}:${_COMMIT_SHA}", # Tag the image with the commit SHA
-        "-f",                                                        # Name of the Dockerfile (Default is 'PATH/Dockerfile')
-        "${local.service_folder_path}/Dockerfile",                   # Path to the Dockerfile
-        ".",                                                         # The build context is the current directory
+        "build",                                                         # Docker command to build an image from a Dockerfile
+        "-t",                                                            # Tag the image with a name and optionally a tag in the 'name:tag' format
+        "gcr.io/${var.project_id}/${local.app_name}:latest",             # Tag the image with the latest tag
+        "-t",                                                            # Tag the image with a name and optionally a tag in the 'name:tag' format
+        "gcr.io/${var.project_id}/${local.app_name}:${local.image_tag}", # Tag the image with the commit SHA
+        "-f",                                                            # Name of the Dockerfile (Default is 'PATH/Dockerfile')
+        "${local.service_folder_path}/Dockerfile",                       # Path to the Dockerfile
+        ".",                                                             # The build context is the current directory
       ]
     }
 
     # List of Docker images to be pushed to the registry upon successful completion of all build steps
     images = [
-      "gcr.io/${var.project_id}/${local.app_name}:latest",        # Image with the latest tag
-      "gcr.io/${var.project_id}/${local.app_name}:${_COMMIT_SHA}" # Image with the commit SHA tag
+      "gcr.io/${var.project_id}/${local.app_name}:latest",            # Image with the latest tag
+      "gcr.io/${var.project_id}/${local.app_name}:${local.image_tag}" # Image with the commit SHA tag
     ]
   }
 }

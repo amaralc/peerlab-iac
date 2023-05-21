@@ -176,7 +176,7 @@ jobs:
       - name: Save GCP credentials to file
         # Use single quotes to ensure double quotes inside the file are considered as literals
         run: |
-          echo '${{ secrets.GCP_STORAGE_SERVICE_ACCOUNT_KEYS }}' > apps/cloud-iac-terraform/credentials.json
+          echo '${{ secrets.GCP_STAGING_PEERLAB_TF_SERVICE_ACCOUNT }}' > apps/cloud-iac-terraform/credentials.json
 
       - id: "auth"
         name: "Authenticate to Google Cloud"
@@ -184,8 +184,8 @@ jobs:
         with:
           # https://github.com/google-github-actions/setup-gcloud
           # https://stackoverflow.com/questions/74388673/cant-authenticate-google-cloud-with-service-key-on-github-actions-unexpected
-          # credentials_json: ${{ secrets.GCP_STORAGE_SERVICE_ACCOUNT_KEYS }}
-          credentials_json: ${{ secrets.GCP_STORAGE_SERVICE_ACCOUNT_KEYS }}
+          # credentials_json: ${{ secrets.GCP_STAGING_PEERLAB_TF_SERVICE_ACCOUNT }}
+          credentials_json: ${{ secrets.GCP_STAGING_PEERLAB_TF_SERVICE_ACCOUNT }}
 
       - name: "Set up Cloud SDK"
         uses: "google-github-actions/setup-gcloud@v1"

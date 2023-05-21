@@ -37,3 +37,8 @@ variable "credentials_path" {
   type        = string
   default     = "credentials.json"
 }
+
+variable "environment" {
+  description = "The deployment environment (staging, production, etc.)"
+  type        = string
+}

@@ -47,16 +47,16 @@ terraform-init-staging:
 	cd apps/researchers/peers/iac/environments/staging && terraform init -upgrade
 
 terraform-plan-staging:
-	cd apps/researchers/peers/iac/environments/staging && terraform plan
+	cd apps/researchers/peers/iac/environments/staging && terraform plan -var-file=staging.tfvars
 
 terraform-apply-staging:
-	cd apps/researchers/peers/iac/environments/staging && terraform apply
+	cd apps/researchers/peers/iac/environments/staging && terraform apply -var-file=staging.tfvars
 
 terraform-apply-staging-auto-approve:
-	cd apps/researchers/peers/iac/environments/staging && terraform apply -auto-approve
+	cd apps/researchers/peers/iac/environments/staging && terraform apply -var-file=staging.tfvars -auto-approve
 
 terraform-plan-staging-out:
-	cd apps/researchers/peers/iac/environments/staging && terraform plan -out=tfplan
+	cd apps/researchers/peers/iac/environments/staging && terraform plan -var-file=staging.tfvars -out=tfplan
 
 terraform-destroy-staging:
-	cd apps/researchers/peers/iac/environments/staging && terraform destroy
+	cd apps/researchers/peers/iac/environments/staging && terraform destroy -var-file=staging.tfvars

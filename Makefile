@@ -50,13 +50,13 @@ terraform-plan-staging:
 	cd apps/researchers/peers/iac/environments/staging && terraform plan
 
 terraform-apply-staging:
-	cd apps/researchers/peers/iac/environments/staging && terraform apply"
+	cd apps/researchers/peers/iac/environments/staging && terraform apply
 
 terraform-apply-staging-auto-approve:
-	cd apps/researchers/peers/iac/environments/staging && terraform apply" -auto-approve
+	cd apps/researchers/peers/iac/environments/staging && terraform apply -auto-approve
 
 terraform-plan-staging-out:
 	cd apps/researchers/peers/iac/environments/staging && terraform plan -out=tfplan
 
 terraform-destroy-staging:
-	cd apps/researchers/peers/iac/environments/staging && terraform destroy"
+	cd apps/researchers/peers/iac/environments/staging && terraform destroy

@@ -1,15 +1,3 @@
-# variable "database_url" {
-#   description = "The database URL connection string"
-#   type        = string
-#   sensitive   = true
-# }
-
-# variable "direct_url" {
-#   description = "The direct URL string"
-#   type        = string
-#   sensitive   = true
-# }
-
 # Define the variables that will be used within the configuration
 variable "project_id" {
   description = "The Google Cloud project ID"
@@ -41,4 +29,16 @@ variable "credentials_path" {
 variable "environment" {
   description = "The deployment environment (staging, production, etc.)"
   type        = string
+}
+
+variable "database_url" {
+  description = "The database URL connection string"
+  type        = string
+  sensitive   = true
+}
+
+variable "direct_url" {
+  description = "The direct URL string"
+  type        = string
+  sensitive   = true
 }
